@@ -2,7 +2,7 @@ import {Component} from 'react';
 // import css from './Contacts.module.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { nanoid } from 'nanoid';
-import {Title, Section, Container} from './Contacts.styled';
+import {Title, Section, Container, Message} from './Contacts.styled';
 
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
@@ -26,7 +26,7 @@ export class Contacts extends Component{
         const newContactName = form.elements.name.value;
         const newContactNumber = form.elements.number.value;
 
-        if (contacts.find(item => item.name === newContactName))
+        if (contacts.find(item => item.name.toLowerCase() === newContactName.toLowerCase()))
             {
                 return Notify.warning(`${newContactName} is alrady in contacts`,
                 { timeout: 4000, position: 'center-top', width: '400px', fontSize: '28px' })
@@ -47,36 +47,59 @@ export class Contacts extends Component{
     }
 
     findContact = (e) => {
-        const serchName = e.target.value.toLowerCase();
+        const serchName = e.target.value;
         this.setState({
         filter: serchName,           
         })        
     }
+
+    filtredList = () => {
+        const { contacts, filter } = this.state
+        return filter ? contacts.filter((contact) => contact.name.toLowerCase().includes(filter.toLowerCase())): '';
+        
+    }
     
     render() {
         const { contacts, filter } = this.state;
+        console.log("this.filtredList()",  this.filtredList().length)
+        console.log(contacts.length);
 
         return <Container>
+            <Section>
+                <Title>Phonebook</Title>
+                <ContactForm addContact={this.addContact} />
+            </Section>
+            <Section>
+                <Title>Contacts</Title>
+                <Filter findContact={this.findContact} serchName={filter} />
 
-        <Section>
-            <Title>Phonebook</Title>
-            <ContactForm addContact={this.addContact} />
-        </Section>
-        <Section>
-            <Title>Contacts</Title>
-            <Filter findContact={this.findContact} />
-            <ContactList contacts={contacts} serchName={filter} removeContact={this.removeContact}/>
-        </Section>
-
+                {(filter && (this.filtredList().length !== 0 
+                ? <ContactList contacts={this.filtredList()} removeContact={this.removeContact} />
+                : <Message>Сontact was not found</Message>)) ||
+                (contacts.length === 0 ? <Message>You don't have any contact</Message>
+                : <ContactList contacts={contacts} removeContact={this.removeContact}/>)
+                }
+            </Section>
         </Container>
         
     };
 }
 
-// {/* <div>
-//   <ContactForm ... />
 
-//   <h2>Contacts</h2>
-//   <Filter findContact />
-//   <ContactList ... />
-// </div> */}
+//    render() {
+//         const { contacts, filter } = this.state;
+
+//         return <Container>
+
+//         <Section>
+//             <Title>Phonebook</Title>
+//             <ContactForm addContact={this.addContact} />
+//         </Section>
+//         <Section>
+//             <Title>Contacts</Title>
+//             <Filter findContact={this.findContact} serchName={this.filter} />
+//             <ContactList contacts={contacts} filtredList={filtredList} removeContact={this.removeContact}/>
+//         </Section>
+
+//         </Container>
+        

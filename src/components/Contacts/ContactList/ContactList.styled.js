@@ -1,8 +1,6 @@
 import styled from '@emotion/styled';
 
-export const Message = styled.div`
-    font-size: 26px; 
-`
+
 export const Item = styled.li`
     display: flex;
     justify-content: space-between;

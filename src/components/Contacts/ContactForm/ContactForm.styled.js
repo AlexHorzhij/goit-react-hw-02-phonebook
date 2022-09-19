@@ -5,8 +5,7 @@ export const Form = styled.form`
     flex-direction: column;
     font-size: 20px;
     padding: 15px 10px;
-    border: 1px solid black;
-        
+    border: 1px solid black;        
 `
 
 export const FormTitle = styled.h3`
